@@ -28,7 +28,7 @@ End If
 ShowMessage "屏幕分辨率:" & 屏幕宽度 & "X" & 屏幕高度 & " DPI:" & 设备DPI & Chr(10) & "网络时间:" & 网络时间 & Chr(10) & "请提前选择好要刷的图" & Chr(10) & "确保屏幕亮度不要过低" & Chr(10) & "请仔细查看使用说明"
 TracePrint  "屏幕分辨率:" & 屏幕宽度 & "X" & 屏幕高度 & " DPI:" & 设备DPI & Chr(10) & "网络时间:" & 网络时间 & Chr(10) & "请提前选择好要刷的图" & Chr(10) & "确保屏幕亮度不要过低" & Chr(10) & "请仔细查看使用说明"
 Delay 1000
-TracePrint  "运行提示 明日方舟 版本:Alpha-008 作者:MQX"
+TracePrint  "运行提示 明日方舟 版本:Alpha-009 作者:MQX"
 Delay 1000
 TracePrint  "==================="
 Delay 1000
@@ -128,7 +128,7 @@ End Select
 界面跳转等待时间 = ReadUIConfig("界面跳转",3000)
 全局等待时间 = ReadUIConfig("全局等待",1000)
 游戏等待时间 = ReadUIConfig("游戏等待", 10000)
-碎源石数量 = ReadUIConfig("碎源石数量", 1)
+碎源石数量 = ReadUIConfig("碎源石数量", 1) - 1
 游戏时间 = 0
 碎石次数 = 0
 ///////////////////////////////////////////////////
@@ -218,11 +218,11 @@ Do
 				Delay 界面跳转等待时间
 			End If
 		ElseIf 刷图模式 = 3 Then
-			If 比色(碎石界面) = 1 Then 
-				If 碎石次数 = 碎源石数量 Then 
+			If 碎石次数 > 碎源石数量 Then 
+				If 比色(碎石界面) = 1 Then 
 					TracePrint "无药剂"
 					EndScript
-				Else
+				Else 
 					体力xx = Int(100 * Rnd() + 体力x)
 					体力yy = int(30 * Rnd() + 体力y)
 					Tap 体力xx, 体力yy
@@ -230,12 +230,6 @@ Do
 					TracePrint "点击体力"
 					Delay 界面跳转等待时间
 				End If
-			Else 
-				体力xx = Int(100 * Rnd() + 体力x)
-				体力yy = int(30 * Rnd() + 体力y)
-				Tap 体力xx, 体力yy
-				TracePrint "点击体力"
-				Delay 界面跳转等待时间
 			End If
 		End If
 	End If
