@@ -28,7 +28,7 @@ End If
 ShowMessage "屏幕分辨率:" & 屏幕宽度 & "X" & 屏幕高度 & " DPI:" & 设备DPI & Chr(10) & "网络时间:" & 网络时间 & Chr(10) & "请提前选择好要刷的图" & Chr(10) & "确保屏幕亮度不要过低" & Chr(10) & "请仔细查看使用说明"
 TracePrint  "屏幕分辨率:" & 屏幕宽度 & "X" & 屏幕高度 & " DPI:" & 设备DPI & Chr(10) & "网络时间:" & 网络时间 & Chr(10) & "请提前选择好要刷的图" & Chr(10) & "确保屏幕亮度不要过低" & Chr(10) & "请仔细查看使用说明"
 Delay 1000
-TracePrint  "运行提示 明日方舟 版本:Alpha-009 作者:MQX"
+TracePrint  "运行提示 明日方舟 版本:Alpha-019 作者:MQX"
 Delay 1000
 TracePrint  "==================="
 Delay 1000
@@ -52,7 +52,7 @@ End If
 //End If
 ///////////////////////////////////////////////////
 //定义变量
-Dim 关卡界面,结算界面,编队界面,体力界面,游戏界面,碎石界面
+Dim 关卡界面,结算界面,编队界面,体力界面,游戏界面,碎石界面,升级界面
 Dim 代理判断,体力判断红,体力判断绿
 Dim 开始行动蓝x,开始行动蓝y,开始行动红x,开始行动红y,代理x,代理y,结算x,结算y,体力x,体力y
 Dim 开始行动蓝xx,开始行动蓝yy,开始行动红xx,开始行动红yy,代理xx,代理yy,结算xx,结算yy,体力xx,体力yy
@@ -61,7 +61,7 @@ Dim 刷图模式选择,刷图模式,界面识别精度,界面精度,碎源石数
 Dim 颜色()
 ///////////////////////////////////////////////////
 //UI
-刷图模式选择 = ReadUIConfig("刷图模式",0)
+刷图模式选择 = Clng(ReadUIConfig("刷图模式",0))
 Select Case 刷图模式选择
 Case 0
 	刷图模式 = 0
@@ -72,7 +72,7 @@ Case 2
 Case 3
 	刷图模式 = 3
 End Select
-界面识别精度 = ReadUIConfig("界面识别精度",8)
+界面识别精度 = Clng(ReadUIConfig("界面识别精度",8))
 Select Case 界面识别精度
 Case 0
 	界面精度 = 0.1
@@ -106,6 +106,7 @@ End Select
 体力判断绿 = 7
 游戏界面 = 8
 碎石界面 = 9
+升级界面 = 10
 颜色(关卡界面) = "102|38|313131-101010,268|36|D8D8D8-101010,1618|122|F6D020-101010,1847|184|4253C6-101010,1814|637|D59300-101010"
 颜色(结算界面) = "107|619|FFFFFF-101010,353|636|FFFFFF-101010,218|529|FFF23F-101010,993|491|0296FF-101010"
 颜色(编队界面) = "94|35|313131-101010,356|34|313131-101010,416|40|FFFFFF-101010,1426|426|FFFFFF-101010,1859|34|00007D-101010"
@@ -113,8 +114,9 @@ End Select
 颜色(代理判断) = "1706|592|FFFFFF-101010"
 颜色(体力判断红) = "1054|371|533D8D-101010"
 颜色(体力判断绿) = "1054|371|51BA99-101010"
-颜色(游戏界面) = "94|46|8C8C8C-101010,807|41|0279FF-101010,1016|37|FFFFFF-101010,807|668|FFFFFF-101010,1849|52|FFFFFF-101010"
+颜色(游戏界面) = "76|38|8C8C8C-101010,827|35|0279FF-101010,1017|35|FFFFFF-101010,804|667|FFFFFF-101010,1830|52|FFFFFF-101010"
 颜色(碎石界面) = "444|240|FFFFFF-101010,1198|111|4F8B93-101010,1293|104|FFFFFF-101010,1099|564|313131-101010,1408|566|313131-101010"
+颜色(升级界面) = "108|479|000000-101010,119|378|010101-101010,109|486|000000-101010,1792|336|2B2B2B-101010,1790|374|2B2B2B-101010"
 开始行动蓝x = 1700
 开始行动蓝y = 640
 开始行动红x = 1380
@@ -125,14 +127,21 @@ End Select
 结算y = 50
 体力x = 1370
 体力y = 560
-界面跳转等待时间 = ReadUIConfig("界面跳转",3000)
-全局等待时间 = ReadUIConfig("全局等待",1000)
-游戏等待时间 = ReadUIConfig("游戏等待", 10000)
-碎源石数量 = ReadUIConfig("碎源石数量", 1) - 1
+界面跳转等待时间 = CLng(ReadUIConfig("界面跳转",3000))
+全局等待时间 = Clng(ReadUIConfig("全局等待",1000))
+游戏等待时间 = Clng(ReadUIConfig("游戏等待时间", 10000))
+碎源石数量 = Clng(ReadUIConfig("碎源石数量", 1))
 游戏时间 = 0
 碎石次数 = 0
 ///////////////////////////////////////////////////
+//测试
+//刷图模式 = 3
+//碎源石数量 = 1
+///////////////////////////////////////////////////
 //主程序
+TracePrint "当前刷图模式:" & 刷图模式
+Delay 2000
+TracePrint "游戏等待时间:" & 游戏等待时间
 Do
 	Delay 全局等待时间
 	KeepCapture
@@ -172,12 +181,14 @@ Do
 		If 游戏时间 = 0 Then
 			Do While 比色(游戏界面) = 1
 				KeepCapture
-				TracePrint "等待游戏结束"
 				游戏时间 = 游戏时间 + 游戏等待时间
+				TracePrint "等待游戏结束:" & 游戏时间 & "ms"
 				Delay 游戏等待时间
 			Loop
-			游戏时间 = 游戏等待时间 + 5000
+			游戏时间 = 游戏时间 + 全局等待时间
+			TracePrint "游戏时间修正完毕,总时间:" & 游戏时间 & "ms"
 		Else 
+			TracePrint "等待游戏结束:" & 游戏时间 & "ms"
 			Delay 游戏时间
 		End If
 //结算界面判断
@@ -194,21 +205,21 @@ Do
 		If 刷图模式 = 0 Then 
 			TracePrint "不碎体力"
 			EndScript
-		End If
-		If 刷图模式 = 1 Then 
+		ElseIf 刷图模式 = 1 Then 
 			If 比色(体力判断红) = 1 Then 
+				TracePrint "红色药剂识别成功"
 				体力xx = Int(100 * Rnd() + 体力x)
 				体力yy = int(30 * Rnd() + 体力y)
 				Tap 体力xx, 体力yy
 				TracePrint "点击体力"
 				Delay 界面跳转等待时间
 			Else
-				TracePrint "无药剂"
+				TracePrint "无红药剂"
 				EndScript
 			End If
 		ElseIf 刷图模式 = 2 Then 
 			If 比色(碎石界面) = 1 Then 
-				TracePrint "无药剂"
+				TracePrint "无绿药剂"
 				EndScript
 			Else
 				体力xx = Int(100 * Rnd() + 体力x)
@@ -218,20 +229,33 @@ Do
 				Delay 界面跳转等待时间
 			End If
 		ElseIf 刷图模式 = 3 Then
-			If 碎石次数 > 碎源石数量 Then 
+			If 碎石次数 = 碎源石数量 or 碎石次数 > 碎源石数量 Then 
+				TracePrint "到达设定碎石数量"
+				EndScript
+			Else
 				If 比色(碎石界面) = 1 Then 
-					TracePrint "无药剂"
-					EndScript
-				Else 
 					体力xx = Int(100 * Rnd() + 体力x)
 					体力yy = int(30 * Rnd() + 体力y)
 					Tap 体力xx, 体力yy
 					碎石次数 = 碎石次数 + 1
 					TracePrint "点击体力"
 					Delay 界面跳转等待时间
+				Else 
+					体力xx = Int(100 * Rnd() + 体力x)
+					体力yy = int(30 * Rnd() + 体力y)
+					Tap 体力xx, 体力yy
+					TracePrint "点击体力"
+					Delay 界面跳转等待时间
 				End If
 			End If
 		End If
+	ElseIf 比色(升级界面) = 1 Then
+		TracePrint "升级界面识别成功"
+		结算xx = Int(300 * Rnd() + 结算x)
+		结算yy = int(200 * Rnd() + 结算y)
+		Tap 结算xx, 结算yy
+		TracePrint "点击升级界面"
+		Delay 界面跳转等待时间
 	End If
 Loop
 Function 比色(a)
