@@ -28,7 +28,7 @@ End If
 ShowMessage "屏幕分辨率:" & 屏幕宽度 & "X" & 屏幕高度 & " DPI:" & 设备DPI & Chr(10) & "网络时间:" & 网络时间 & Chr(10) & "请提前选择好要刷的图" & Chr(10) & "确保屏幕亮度不要过低" & Chr(10) & "请仔细查看使用说明"
 TracePrint  "屏幕分辨率:" & 屏幕宽度 & "X" & 屏幕高度 & " DPI:" & 设备DPI & Chr(10) & "网络时间:" & 网络时间 & Chr(10) & "请提前选择好要刷的图" & Chr(10) & "确保屏幕亮度不要过低" & Chr(10) & "请仔细查看使用说明"
 Delay 1000
-TracePrint  "运行提示 明日方舟 版本:Alpha-002 作者:MQX"
+TracePrint  "运行提示 明日方舟 版本:Alpha-008 作者:MQX"
 Delay 1000
 TracePrint  "==================="
 Delay 1000
